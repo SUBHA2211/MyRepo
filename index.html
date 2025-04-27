@@ -1,0 +1,288 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .smooth-scroll {
+            scroll-behavior: smooth;
+        }
+        .portfolio-card:hover {
+            transform: translateY(-5px);
+            transition: transform 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans smooth-scroll">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg fixed w-full z-10">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-between">
+                <div class="flex space-x-7">
+                    <div>
+                        <a href="#" class="flex items-center py-4 px-2">
+                            <span class="font-semibold text-gray-500 text-lg">Subha Mondal</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-1">
+                    <a href="#about" class="py-4 px-2 text-gray-500 font-semibold hover:text-blue-500 transition duration-300">About</a>
+                    <a href="#skills" class="py-4 px-2 text-gray-500 font-semibold hover:text-blue-500 transition duration-300">Skills</a>
+                    <a href="#portfolio" class="py-4 px-2 text-gray-500 font-semibold hover:text-blue-500 transition duration-300">Portfolio</a>
+                    <a href="#publications" class="py-4 px-2 text-gray-500 font-semibold hover:text-blue-500 transition duration-300">Publications</a>
+                    <a href="#achievements" class="py-4 px-2 text-gray-500 font-semibold hover:text-blue-500 transition duration-300">Achievements</a>
+                    <a href="#contact" class="py-4 px-2 text-gray-500 font-semibold hover:text-blue-500 transition duration-300">Contact</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="bg-blue-500 text-white pt-20 pb-16">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">Hi, I'm Mr.Subha Mondal</h1>
+            <p class="text-xl mb-6">A passionate researcher from Indian Institute Of Technology Kharagpur</p>
+            <a href="#contact" class="bg-white text-blue-500 px-6 py-3 rounded-full font-semibold hover:bg-gray-100 transition duration-300">Get in Touch</a>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-16">
+        <div class="max-w-6xl mx-auto px-4">
+            <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">About Me</h2>
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/3 mb-6 md:mb-0">
+                    <img src="C:\Users\monda\Downloads\My_Image.jpg" alt="Profile Picture" class="rounded-full mx-auto">
+                </div>
+                <div class="md:w-2/3 md:pl-8">
+                    <p class="text-gray-600 leading-relaxed">
+                        I am currently pursuing my PhD in Computer Science at <p class="text-gray-900"> <a href="https://www.iitkgp.ac.in/" class="text-blue-600 hover:underline">IIT Kharagpur.</a></p> My research interests include Natural language processing,Deep learning, data science, and artificial intelligence.Prior to this, I completed my B.Tech in Information Technology from <p class="text-gray-900"> <a href="https://gcelt.gov.in/" class="text-blue-600 hover:underline">Goverment College of Engineering And Leather Technology</a></p>and Master's from <p class="text-gray-900"> <a href="https://nitdgp.ac.in/" class="text-blue-600 hover:underline">Naational Institute of Technology Durgapur.</a></p> I have a strong foundation in algorithms, data structures. I am passionate about solving complex problems and continuously learning new technologies. Before joining IIT Kharagpur, I worked as an R&D engineer at <p class="text-gray-900"> <a href="https://ghspl.com/" class="text-blue-600 hover:underline">Glocal Health Care Pvt. Ltd.</a></p>where I contributed to several successful projects.Later I joined as an assistant professor at <p class="text-gray-900"> <a href="https://www.soa.ac.in/iter" class="text-blue-600 hover:underline">Institute of Technical Education And Research,SOA(Deemed to be university)</a></p> where I taught various computer science subjects and mentored students on their projects. 
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="bg-gray-200 py-16">
+        <div class="max-w-6xl mx-auto px-4">
+            <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">Skills</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Web Development</h3>
+                    <p class="text-gray-600">HTML, CSS, JavaScript, JasperReport</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Computer Languages</h3>
+                    <p class="text-gray-600">C, C++, Java, Python</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Data Science Libraries</h3>
+                    <p class="text-gray-600">Numpy, Pytorch, Scikit-Learn, Pandas, HuggingFace Transformers, Seaborn,NLTK</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="py-16">
+        <div class="max-w-6xl mx-auto px-4">
+            <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">Portfolio</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white rounded-lg shadow-md portfolio-card">
+                    <img src="C:\Users\monda\Downloads\Sonar_Rock_vs_mone_prediction.jpg" alt="Project 1" class="w-full rounded-t-lg">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Project One</h3>
+                        <p class="text-gray-600">Sonar_rock_vs_Mine_prediction using Machine Learning Model</p>
+                        <a href="https://github.com/SUBHA2211/ML-DL-Projects/blob/main/Sonar_rock_vs_Mine_prediction_ML.ipynb" class="text-blue-500 hover:underline mt-2 inline-block">View Project</a>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-md portfolio-card">
+                    <img src="C:\Users\monda\Downloads\Diabetes-Prediction-Using-Machine-Learning.webp" alt="Project 2" class="w-full rounded-t-lg">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Project Two</h3>
+                        <p class="text-gray-600">Diabetes prdiction using support vector machine.</p>
+                        <a href="https://github.com/SUBHA2211/ML-DL-Projects/blob/main/Diabetes_prdiction_using_support_vector_machine.ipynb" class="text-blue-500 hover:underline mt-2 inline-block">View Project</a>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-md portfolio-card">
+                    <img src="C:\Users\monda\Downloads\PCA.png" alt="Project 3" class="w-full rounded-t-lg">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Project Three</h3>
+                        <p class="text-gray-600">Face Recognition Using Principal Component Analysis.</p>
+                        <a href="https://github.com/SUBHA2211/ML-DL-Projects/blob/main/Linear_Algebra_Prog_Assign.ipynb" class="text-blue-500 hover:underline mt-2 inline-block">View Project</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Publications Section -->
+    <section id="publications" class="bg-gray-200 py-16">
+        <div class="max-w-6xl mx-auto px-4">
+            <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">Publications(Currently, I'm working with placeholder publications. Updates will be provided soon.)</h2>
+            <div class="space-y-6">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">A Novel Approach to Sentiment Analysis Using Deep Learning</h3>
+                    <p class="text-gray-600 mb-1">Subha Mondal, John Doe, Jane Smith</p>
+                    <p class="text-gray-600 mb-1">Journal of Artificial Intelligence Research, 2024</p>
+                    <a href="#" class="text-blue-500 hover:underline">View Publication</a>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Efficient NLP Models for Low-Resource Languages</h3>
+                    <p class="text-gray-600 mb-1">Subha Mondal, Alice Johnson</p>
+                    <p class="text-gray-600 mb-1">Proceedings of the International Conference on Natural Language Processing, 2023</p>
+                    <a href="#" class="text-blue-500 hover:underline">View Publication</a>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Optimizing Transformer Models for Real-Time Applications</h3>
+                    <p class="text-gray-600 mb-1">Subha Mondal, Bob Wilson, Carol Lee</p>
+                    <p class="text-gray-600 mb-1">IEEE Transactions on Neural Networks, 2022</p>
+                    <a href="#" class="text-blue-500 hover:underline">View Publication</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Achievements Section -->
+    <section id="achievements" class="py-16">
+        <div class="max-w-6xl mx-auto px-4">
+            <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">Achievements</h2>
+            <div class="space-y-6">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">GATE</h3>
+                    <p class="text-gray-600 mb-1">Qualified GATE twice, in 2019 and 2023.</p>
+                    <p class="text-gray-600 mb-1">2019, 2023</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">NET</h3>
+                    <p class="text-gray-600 mb-1">Qualified NET (National Eligibility Test for Assistant Professor) twice, in June 2023 and December 2023 cycles.</p>
+                    <p class="text-gray-600 mb-1">2023</p>
+                </div>
+                
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="bg-gray-800 text-white py-16">
+        <div class="max-w-6xl mx-auto px-4">
+            <h2 class="text-3xl font-bold mb-8 text-center">Get in Touch</h2>
+            <div class="max-w-lg mx-auto">
+                <div class="mb-4">
+                    <p class="text-gray-300">Email: <a href="subhamondal.24@kgpian.iitkgp.ac.in" class="text-blue-300 hover:underline">subhamondal.24@kgpian.iitkgp.ac.in</a></p>
+                </div>
+                <div class="mb-4">
+                    <p class="text-gray-300">Email: <a href="mondalsubha24@gmail.com" class="text-blue-300 hover:underline">mondalsubha24@gmail.com</a></p>
+                </div>
+                <div class="mb-4">
+                    <p class="text-gray-300">LinkedIn: <a href="www.linkedin.com/in/subha-mondal-0164b7131" class="text-blue-300 hover:underline">www.linkedin.com/in/subha-mondal-0164b7131</a></p>
+                </div>
+                <div class="mb-4">
+                    <p class="text-gray-300">GitHub: <a href="https://github.com/SUBHA2211" class="text-blue-300 hover:underline">https://github.com/SUBHA2211</a></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-400 py-6">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+            <p>© 2025 Subha Mondal. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+    </script>
+    <script>
+        // Simple scroll animation for nav links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
